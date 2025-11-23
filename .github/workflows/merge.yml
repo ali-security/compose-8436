@@ -123,7 +123,7 @@ jobs:
             *.attest=type=provenance,mode=max,builder-id=https://github.com/${{ env.GITHUB_REPOSITORY }}/actions/runs/${{ env.GITHUB_RUN_ID }}
 
   desktop-edge-test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: bin-image
     steps:
       -

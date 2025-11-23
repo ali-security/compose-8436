@@ -23,7 +23,7 @@ permissions:
 
 jobs:
   prepare:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     outputs:
       matrix: ${{ steps.platforms.outputs.matrix }}
     steps:
@@ -41,7 +41,7 @@ jobs:
           echo ${{ steps.platforms.outputs.matrix }}
 
   validate:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
@@ -63,7 +63,7 @@ jobs:
           make ${{ matrix.target }}
 
   binary:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs:
       - prepare
     strategy:
@@ -96,14 +96,14 @@ jobs:
             *.cache-to=type=gha,scope=binary-${{ env.PLATFORM_PAIR }},mode=max
       -
         name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: compose
           path: ./bin/release/*
           if-no-files-found: error
 
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       -
         name: Checkout
@@ -121,7 +121,7 @@ jobs:
             *.cache-to=type=gha,scope=test
       -
         name: Gather coverage data
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: coverage-data-unit
           path: bin/coverage/unit/
@@ -133,7 +133,7 @@ jobs:
           paths: bin/coverage/unit/report.xml       
         if: always()
   e2e:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
@@ -193,7 +193,7 @@ jobs:
       -
         name: Gather coverage data
         if: ${{ matrix.mode == 'plugin' }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: coverage-data-e2e
           path: bin/coverage/e2e/
@@ -239,7 +239,7 @@ jobs:
         run: |
           go tool covdata textfmt -i=./coverage/unit,./coverage/e2e -o ./coverage.txt
       - name: Store coverage report in GitHub Actions
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: go-covdata-txt
           path: ./coverage.txt
@@ -253,7 +253,7 @@ jobs:
     permissions:
       contents: write # to create a release (ncipollo/release-action)
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs:
       - binary
     steps:
